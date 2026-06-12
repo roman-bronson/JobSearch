@@ -1,8 +1,10 @@
 import type { Job } from '../types/Job'
+import { FaXmark } from 'react-icons/fa6';
 import { useState } from 'react'
 
 interface AddJobCardProps {
     addJob: (job: Job) => void;
+    toggleRenderJobCardForm: () => void;
 }
 
 interface FormData {
@@ -21,7 +23,7 @@ const initialFormData: FormData = {
     status: 'Applied'
 }
 
-export default function AddJobForm({ addJob }: AddJobCardProps) {
+export default function AddJobForm({ addJob, toggleRenderJobCardForm }: AddJobCardProps) {
     const [ form, setForm ] = useState<FormData>(initialFormData);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -61,6 +63,7 @@ export default function AddJobForm({ addJob }: AddJobCardProps) {
 
     return (
         <form onSubmit={handleSubmit}>
+            <button type="button" className="btn btn-danger" onClick={toggleRenderJobCardForm}><FaXmark /></button>
             <label htmlFor="companyName" className="form-label">Company Name</label>
             <input 
                 className="form-control" 
@@ -127,7 +130,7 @@ export default function AddJobForm({ addJob }: AddJobCardProps) {
                 <option value="Rejected">Rejected</option>
                 <option value="Withdrawn">Withdrawn</option>
             </select>
-            <button type="submit" className="btn btn-primary">Add a Job</button>
+            <button type="submit" className="btn btn-primary">Submit</button>
         </form>
     );
 }

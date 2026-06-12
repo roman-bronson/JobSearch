@@ -27,10 +27,18 @@ function App() {
         setJobs((prevJobs) => prevJobs.filter((job) => job.id !== id));
     };
 
+    const [renderAddJobForm, setRenderAddJobForm] = useState(false)
+
+    const toggleRenderAddJobForm = () => {
+        setRenderAddJobForm((current) => !current)
+    }
+
     return (
         <div style={{ padding: '1rem' }}>
             <h2>Jobs</h2>
-            <AddJobCard addJob={addJob} />
+
+            <button type="button" className="btn btn-success" onClick={toggleRenderAddJobForm}>Add a Job</button>
+            { renderAddJobForm && (<AddJobCard addJob={addJob} toggleRenderJobCardForm={toggleRenderAddJobForm}/>)}
             <JobList jobs={jobs} onDelete={onDelete} />
         </div>
     );
