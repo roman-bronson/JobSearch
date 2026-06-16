@@ -9,5 +9,29 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
+}
+
+model job {
+  id            Int      @id @default(autoincrement())
+  companyName   String   @db.VarChar(255)
+  positionTitle String   @db.VarChar(255)
+  location      String   @db.VarChar(255)
+  salaryMin     Int
+  salaryMax     Int?
+  status        Status   @default(APPLIED)
+  notes         String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum Status {
+  APPLIED
+  RECRUITER_SCREEN
+  TECHNICAL_INTERVIEW
+  FINAL_INTERVIEW
+  OFFER
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
 }
