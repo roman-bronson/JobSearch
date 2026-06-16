@@ -1,24 +1,16 @@
 import express from "express";
-import { getJobs } from "../controllers/jobsController";
+import { getAllJobs, createJob, getOneJob, deleteJob, patchJob } from "../controllers/jobsController";
 
 const router = express.Router();
 
-router.get('/:id', (req, res) => {
-    res.send(`Get the job with the specifid id: ${req.params.id}`)
-})
+router.get('/:id', getOneJob);
 
-router.get('/', getJobs);
+router.get('/', getAllJobs);
 
-router.post('/:id', (req, res) => {
-    res.send(`Create a job with the specifid id: ${req.params.id}`)
-})
+router.post('/', createJob);
 
-router.put('/:id', (req, res) => {
-    res.send(`Get the job with the specifid id: ${req.params.id}`)
-})
+router.patch('/:id', patchJob)
 
-router.delete('/:id', (req, res) => {
-    res.send(`Get the job with the specifid id: ${req.params.id}`)
-})
+router.delete('/:id', deleteJob);
 
 export default router;

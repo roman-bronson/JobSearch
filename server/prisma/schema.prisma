@@ -12,7 +12,7 @@ datasource db {
   provider = "mysql"
 }
 
-model job {
+model Job {
   id            Int      @id @default(autoincrement())
   companyName   String   @db.VarChar(255)
   positionTitle String   @db.VarChar(255)
