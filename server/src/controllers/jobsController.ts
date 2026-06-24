@@ -1,6 +1,19 @@
 import { Request, Response } from "express";
 import prisma from "../lib/prisma";
 
+interface JobParams {
+    id: string
+}
+
+// Shared helper used by controllers that receive an id route parameter.
+// Returns null when the parameter cannot be converted to a valid number.
+const getIdFromParams = (id: string): number | null => {
+    const parsedId = Number(id);
+
+    return isNaN(parsedId) ? null : parsedId;
+};
+
+// Retrieve all jobs stored in the database.
 export const getAllJobs = async ( req: Request, res: Response ) => {
     try {
         const jobs = await prisma.job.findMany();
@@ -17,6 +30,7 @@ export const createJob = async (req: Request, res: Response) => {
     try {
         const newJob = req.body;
 
+        // Required fields for creating a valid job record.
         const requiredFields = [
             "companyName",
             "positionTitle",
@@ -25,6 +39,8 @@ export const createJob = async (req: Request, res: Response) => {
             "status"
         ];
 
+        // salaryMax and notes are optional and default to null
+        // when not provided by the client.
         const missingFields = requiredFields.filter(
             (field) => 
                 newJob[field] === undefined ||
@@ -61,11 +77,11 @@ export const createJob = async (req: Request, res: Response) => {
     }
 };
 
-export const getOneJob = async ( req: Request, res: Response ) => {
+export const getOneJob = async ( req: Request<JobParams>, res: Response ) => {
     try {
-        const id = Number(req.params.id);
+        const id = getIdFromParams(req.params.id);
 
-        if (isNaN(id)) {
+        if (id === null) {
             return res.status(400).json({
                 message: "Invalid job id"
             });
@@ -87,11 +103,11 @@ export const getOneJob = async ( req: Request, res: Response ) => {
     }
 };
 
-export const patchJob = async (req: Request, res: Response) => {
+export const patchJob = async (req: Request<JobParams>, res: Response) => {
     try {
-        const id = Number(req.params.id);
+        const id = getIdFromParams(req.params.id);
 
-        if (isNaN(id)) {
+        if (id === null) {
             return res.status(400).json({
                 message: "Invalid job id"
             });
@@ -113,7 +129,11 @@ export const patchJob = async (req: Request, res: Response) => {
             where: {
                 id
             },
-            data: {
+            data: 
+            // PATCH semantics:
+            // Only update fields included in the request body.
+            // Existing values remain unchanged.
+            {
                 ...(updateBody.companyName !== undefined && {
                     companyName: updateBody.companyName
                 }),
@@ -154,11 +174,11 @@ export const patchJob = async (req: Request, res: Response) => {
     }
 };
 
-export const deleteJob = async ( req: Request, res: Response ) => {
+export const deleteJob = async ( req: Request<JobParams>, res: Response ) => {
     try {
-        const id = Number(req.params.id);
+        const id = getIdFromParams(req.params.id);
 
-        if (isNaN(id)) {
+        if (id === null) {
             return res.status(400).json({
                 message: "Invalid job id"
             });

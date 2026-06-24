@@ -3,28 +3,41 @@ import JobList from './components/JobList.tsx';
 import AddJobCard from './components/AddJobForm.tsx';
 import type { Job } from './types/Job.tsx'
 import { useState, useEffect } from 'react'
+import { getAllJobs, deleteJob, createJob } from './api/jobs.ts';
 
 function App() {
-    const [jobs, setJobs] = useState<Job[]>(() => {
-        const saved = localStorage.getItem('jobs')
-        return saved ? (JSON.parse(saved) as Job[]) : []
-    });
+    const [jobs, setJobs] = useState<Job[]>([]);
 
     useEffect(() => {
-        localStorage.setItem('jobs', JSON.stringify(jobs))
-    }, [jobs])
+        const fetchJobs = async () => {
+            try {
+                const jobsData = await getAllJobs();
+                setJobs(jobsData);
+            } catch (error) {
+                console.error(error);
+            }
+        };
 
-    const addJob = (job: Job) => {
-        const newJob = {
-            ...job,
-            id: crypto.randomUUID()
+        fetchJobs();
+    }, []);
+
+    const addJob = async (job: Job) => {
+        try {
+            const newJob = await createJob(job);
+            setJobs((prevJobs) => [...prevJobs, newJob]);
+        } catch (error) {
+            console.error(error);
         }
-
-        setJobs((prevJobs) => [...prevJobs, newJob]);
     };
 
-    const onDelete = (id: string) => {
-        setJobs((prevJobs) => prevJobs.filter((job) => job.id !== id));
+    const onDelete = async (id: number) => {
+        try {
+            await deleteJob(id);
+
+            setJobs((prevJobs) => prevJobs.filter((job) => job.id !== id));
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const [renderAddJobForm, setRenderAddJobForm] = useState(false)
