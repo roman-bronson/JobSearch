@@ -10,6 +10,16 @@ export interface CreateJobRequest {
     notes?: string | null;
 }
 
+export interface updateJobRequest {
+    companyName?: string;
+    positionTitle?: string;
+    location?: string;
+    salaryMin?: number;
+    salaryMax?: number | null;
+    status?: string;
+    notes?: string | null;
+}
+
 const API_URL = "http://localhost:3000/jobs";
 
 export const getAllJobs = async (): Promise<Job[]> => {
@@ -45,6 +55,22 @@ export const createJob = async (job: CreateJobRequest): Promise<Job> => {
 
     if (!response.ok) {
         throw new Error("Failed to create job");
+    }
+
+    return response.json();
+}
+
+export const editJob = async (id: number, payload: updateJobRequest): Promise<Job> => {
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to update job");
     }
 
     return response.json();

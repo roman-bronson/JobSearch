@@ -41,8 +41,6 @@ export default function AddJobForm({ addJob, toggleRenderJobCardForm }: AddJobCa
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        console.log(form)
-
         const newJob = {
             companyName: form.companyName,
             positionTitle: form.positionTitle,
@@ -87,7 +85,7 @@ export default function AddJobForm({ addJob, toggleRenderJobCardForm }: AddJobCa
                 onChange={handleChange}
             />
 
-            <label htmlFor="salaryMin" className="form-label">Salary Min</label>
+            <label htmlFor="salaryMin" className="form-label">Salary Min (Per Year)</label>
             <input 
                 className="form-control" 
                 id="salaryMin"
@@ -98,7 +96,7 @@ export default function AddJobForm({ addJob, toggleRenderJobCardForm }: AddJobCa
                 onFocus={(e) => e.target.value = ''}
             />
 
-            <label htmlFor="salaryMax" className="form-label">Salary Max</label>
+            <label htmlFor="salaryMax" className="form-label">Salary Max (Per Year)</label>
             <input 
                 className="form-control" 
                 id="salaryMax"
