@@ -8,19 +8,23 @@ interface AddJobCardProps {
 }
 
 interface FormData {
-    companyName: string
-    positionTitle: string
-    location: string
-    salary: { min: number, max: number }
-    status: string
+    companyName: string;
+    positionTitle: string;
+    location: string;
+    salaryMin: number;
+    salaryMax?: number | null;
+    status: string;
+    notes?: string | null;
 }
 
 const initialFormData: FormData = {
     companyName: '',
     positionTitle: '',
     location: '',
-    salary: { min: 0, max: 0 },
-    status: 'Applied'
+    salaryMin: 0,
+    salaryMax: 0,
+    status: 'APPLIED',
+    notes: ''
 }
 
 export default function AddJobForm({ addJob, toggleRenderJobCardForm }: AddJobCardProps) {
@@ -28,20 +32,10 @@ export default function AddJobForm({ addJob, toggleRenderJobCardForm }: AddJobCa
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target
-        if (name === 'salaryMin' || name === 'salaryMax') {
-            setForm((prev) => ({
-                ...prev,
-                salary: {
-                    ...prev.salary,
-                    [name === 'salaryMin' ? 'min' : 'max']: Number(value),
-                }
-            }))
-        } else {
-            setForm((prev) => ({
+        setForm((prev) => ({
                 ...prev,
                 [name]: value,
-            }))
-        }
+        }));
     }
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -53,8 +47,10 @@ export default function AddJobForm({ addJob, toggleRenderJobCardForm }: AddJobCa
             companyName: form.companyName,
             positionTitle: form.positionTitle,
             location: form.location,
-            salary: form.salary,
-            status: form.status
+            salaryMin: Number(form.salaryMin),
+            salaryMax: Number(form.salaryMax),
+            status: form.status,
+            notes: form.notes
         }
 
         addJob(newJob as Job)
@@ -97,7 +93,7 @@ export default function AddJobForm({ addJob, toggleRenderJobCardForm }: AddJobCa
                 id="salaryMin"
                 name="salaryMin"
                 type="number"
-                value={form.salary.min || ''}
+                value={form.salaryMin || 0}
                 onChange={handleChange}
                 onFocus={(e) => e.target.value = ''}
             />
@@ -108,9 +104,18 @@ export default function AddJobForm({ addJob, toggleRenderJobCardForm }: AddJobCa
                 id="salaryMax"
                 name="salaryMax"
                 type="number"
-                value={form.salary.max || ''}
+                value={form.salaryMax || 0}
                 onChange={handleChange}
                 onFocus={(e) => e.target.value = ''}
+            />
+
+            <label htmlFor="notes" className="form-label">Notes</label>
+            <input 
+                className="form-control" 
+                id="notes" 
+                name="notes"
+                value={form.notes ?? ""} // React doesn't like null as an input value, translate to empty string
+                onChange={handleChange}
             />
 
             <label htmlFor="status" className="form-label">Status</label>
@@ -121,14 +126,14 @@ export default function AddJobForm({ addJob, toggleRenderJobCardForm }: AddJobCa
                 value={form.status}
                 onChange={handleChange}
             > 
-                <option value="Applied">Applied</option>
-                <option value="Recruiter Screen">Recruiter Screen</option>
-                <option value="Technical Interview">Technical Interview</option>
-                <option value="Final Interview">Final Interview</option>
-                <option value="Offer">Offer</option>
-                <option value="Accepted">Accepted</option>
-                <option value="Rejected">Rejected</option>
-                <option value="Withdrawn">Withdrawn</option>
+                <option value="APPLIED">Applied</option>
+                <option value="RECRUITER_SCREEN">Recruiter Screen</option>
+                <option value="TECHNICAL_INTERVIEW">Technical Interview</option>
+                <option value="FINAL_INTERVIEW">Final Interview</option>
+                <option value="OFFER">Offer</option>
+                <option value="ACCEPTED">Accepted</option>
+                <option value="REJECTED">Rejected</option>
+                <option value="WITHDRAWN">Withdrawn</option>
             </select>
             <button type="submit" className="btn btn-primary">Submit</button>
         </form>

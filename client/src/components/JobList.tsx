@@ -3,7 +3,7 @@ import type { Job } from "../types/Job";
 
 interface JobListProps {
     jobs: Job[];
-    onDelete: (id: string) => void;
+    onDelete: (id: number) => void;
 }
 
 export default function JobList ({ jobs, onDelete }: JobListProps) {

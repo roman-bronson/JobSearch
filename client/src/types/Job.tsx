@@ -1,8 +1,10 @@
 export interface Job {
-    id: string;
+    id: number;
     companyName: string;
     positionTitle: string;
     location: string;
-    salary: { min: number; max: number };
+    salaryMin: number;
+    salaryMax?: number | null;
     status: string;
+    notes?: string | null;
 }
