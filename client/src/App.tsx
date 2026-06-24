@@ -3,7 +3,7 @@ import JobList from './components/JobList.tsx';
 import AddJobCard from './components/AddJobForm.tsx';
 import type { Job } from './types/Job.tsx'
 import { useState, useEffect } from 'react'
-import { getAllJobs, deleteJob, createJob } from './api/jobs.ts';
+import { getAllJobs, deleteJob, createJob, type CreateJobRequest } from './api/jobs.ts';
 
 function App() {
     const [jobs, setJobs] = useState<Job[]>([]);
@@ -21,7 +21,7 @@ function App() {
         fetchJobs();
     }, []);
 
-    const addJob = async (job: Job) => {
+    const addJob = async (job: CreateJobRequest) => {
         try {
             const newJob = await createJob(job);
             setJobs((prevJobs) => [...prevJobs, newJob]);
