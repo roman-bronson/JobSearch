@@ -1,9 +1,10 @@
 import type { Job } from '../types/Job'
 import { FaXmark } from 'react-icons/fa6';
 import { useState } from 'react'
+import type { CreateJobRequest } from '../api/jobs';
 
 interface AddJobCardProps {
-    addJob: (job: Job) => void;
+    addJob: (job: CreateJobRequest) => void;
     toggleRenderJobCardForm: () => void;
 }
 
