@@ -10,10 +10,10 @@ interface JobListProps {
 
 export default function JobList ({ jobs, handleDelete, handleUpdate }: JobListProps) {
     return (
-        <>
+        <div className="job-list">
             {jobs.map((job) => (
                 <JobCard key={job.id} job={job} handleDelete={() => handleDelete(job.id)} handleUpdate={handleUpdate}/>
             ))}
-        </>
+        </div>
     );
 }

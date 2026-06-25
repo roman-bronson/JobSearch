@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import type { Job } from '../types/Job';
 import { FaTrash, FaEdit } from "react-icons/fa";
+import { TbMoneybag } from "react-icons/tb";
+import { IoLocationOutline } from "react-icons/io5";
 import type { updateJobRequest } from '../api/jobs';
+import { statusMapping } from '../types/statusMap';
 
 interface JobCardProps {
     job: Job;
@@ -132,13 +135,13 @@ export default function JobCard({ job, handleDelete, handleUpdate }: JobCardProp
     else {
         return (
             <div className="card" style={{ width: '18rem', marginBottom: '1rem' }}>
-                <div className="card-header">{companyName}</div>
+                <div className="card-header company-name">{companyName}</div>
                 <ul className="list-group list-group-flush">
-                    <li className="list-group-item">{positionTitle}</li>
-                    <li className="list-group-item">{location}</li>
-                    <li className="list-group-item">{formatSalary(salaryMin, salaryMax)}</li>
-                    { notes && <li className="list-group-item">{notes}</li> }
-                    <li className="list-group-item">{status}</li>
+                    <li className="list-group-item position-title">{positionTitle}</li>
+                    <li className="list-group-item card-details"><IoLocationOutline className='details-icon'/>{location}</li>
+                    <li className="list-group-item card-details"><TbMoneybag className='details-icon'/>{formatSalary(salaryMin, salaryMax)}</li>
+                    { notes && <li className="list-group-item card-notes">{notes}</li> }
+                    <li className="list-group-item card-notes">{statusMapping[status].displayName}</li>
                     <li className="list-group-item">
                         <button type="button" className="btn btn-danger" onClick={handleDelete}>
                             <FaTrash/>

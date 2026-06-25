@@ -1,0 +1,35 @@
+:root {
+    --card-title-size: 1.5rem;
+    --card-position-title-size: 1.125rem;
+    --card-details-icon: 1.1rem;
+    --card-details-size: .9rem;
+    --card-notes-size: .8rem;
+}
+
+.header {
+    margin: 1rem;
+}
+
+.job-list {
+    margin: 1rem;
+}
+
+.company-name {
+    font-size: var(--card-title-size);
+}
+
+.position-title {
+    font-size: var(--card-position-title-size);
+}
+
+.card-details {
+    font-size: var(--card-details-size);
+}
+
+.card-notes {
+    font-size: var(--card-notes-size);
+}
+
+.details-icon {
+    font-size: var(--card-details-icon);
+}
