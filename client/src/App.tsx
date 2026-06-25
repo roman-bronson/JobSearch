@@ -1,9 +1,9 @@
 import './App.css'
 import JobList from './components/JobList.tsx';
-import AddJobCard from './components/AddJobForm.tsx';
 import type { Job } from './types/Job.tsx'
 import { useState, useEffect } from 'react'
 import { getAllJobs, deleteJob, createJob, editJob, type CreateJobRequest, type updateJobRequest } from './api/jobs.ts';
+import Header from './components/header.tsx';
 
 function App() {
     const [jobs, setJobs] = useState<Job[]>([]);
@@ -55,11 +55,8 @@ function App() {
     }
 
     return (
-        <div style={{ padding: '1rem' }}>
-            <h2>Jobs</h2>
-
-            <button type="button" className="btn btn-success" onClick={toggleRenderAddJobForm}>Add a Job</button>
-            { renderAddJobForm && (<AddJobCard addJob={addJob} toggleRenderJobCardForm={toggleRenderAddJobForm}/>)}
+        <div>
+            <Header renderAddJobForm={renderAddJobForm} addJob={addJob} toggleRenderJobCardForm={toggleRenderAddJobForm}/>
             <JobList jobs={jobs} handleDelete={handleDelete} handleUpdate={handleUpdate}/>
         </div>
     );
