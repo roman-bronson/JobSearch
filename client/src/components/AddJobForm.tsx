@@ -1,5 +1,4 @@
 import type { Job } from '../types/Job'
-import { FaXmark } from 'react-icons/fa6';
 import { useState } from 'react'
 import type { CreateJobRequest } from '../api/jobs';
 
@@ -18,6 +17,14 @@ interface FormData {
     notes?: string | null;
 }
 
+interface FormErrors {
+    companyName?: string;
+    positionTitle?: string;
+    location?: string;
+    salaryMin?: string;
+    salaryMax?: string;
+}
+
 const initialFormData: FormData = {
     companyName: '',
     positionTitle: '',
@@ -30,17 +37,56 @@ const initialFormData: FormData = {
 
 export default function AddJobForm({ addJob, toggleRenderJobCardForm }: AddJobCardProps) {
     const [ form, setForm ] = useState<FormData>(initialFormData);
+    const [errors, setErrors] = useState<FormErrors>({});
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
         setForm((prev) => ({
-                ...prev,
-                [name]: value,
+            ...prev,
+            [name]: value,
         }));
+
+        setErrors((prev) => ({
+            ...prev,
+            [name]: undefined,
+        }));
+    }
+
+    const validateForm = (): FormErrors => {
+        const errors: FormErrors = {};
+    
+        if (!form.companyName.trim()) {
+            errors.companyName = "Company name is required.";
+        }
+
+        if (!form.positionTitle.trim()) {
+            errors.positionTitle = "Position title is required.";
+        }
+
+        if (!form.location.trim()) {
+            errors.location = "Location is required.";
+        }
+
+        if (form.salaryMin <= 0) {
+            errors.salaryMin = "Salary must be greater than 0.";
+        }
+
+        if (form.salaryMax && form.salaryMax < form.salaryMin) {
+            errors.salaryMax = "Salary Max must be greater than Salary Min"
+        }
+
+        return errors;
     }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        const errors = validateForm();
+        setErrors(errors);
+
+        if (Object.keys(errors).length > 0) {
+            return;
+        }
 
         const newJob = {
             companyName: form.companyName,
@@ -57,84 +103,134 @@ export default function AddJobForm({ addJob, toggleRenderJobCardForm }: AddJobCa
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <button type="button" className="btn btn-danger" onClick={toggleRenderJobCardForm}><FaXmark /></button>
-            <label htmlFor="companyName" className="form-label">Company Name</label>
-            <input 
-                className="form-control" 
-                id="companyName" 
-                name="companyName"
-                value={form.companyName}
-                onChange={handleChange}
-            />
+        <div className="add-job-form">
+            <div className='job-form-header'>
+                <div className="job-form-header-details">
+                    <h4>New Job Application</h4>
+                    <button type="button" className="btn btn-danger" onClick={toggleRenderJobCardForm}><i className="bi bi-x-lg"></i></button>
+                </div>
+                <p>Track a new job application during your job search!</p>
+            </div>
+            <form className="job-form-grid" onSubmit={handleSubmit}>
+                <div className='field'>
+                    <label htmlFor="companyName" className="form-label">Company Name</label>
+                    <input 
+                        className={`form-control ${errors.companyName ? "is-invalid" : ""}`}
+                        id="companyName" 
+                        name="companyName"
+                        value={form.companyName}
+                        onChange={handleChange}
+                    />
+                    {errors.companyName && (
+                        <div className="invalid-feedback">
+                            {errors.companyName}
+                        </div>
+                    )}
+                </div>
 
-            <label htmlFor="positionTitle" className="form-label">Position Title</label>
-            <input 
-                className="form-control" 
-                id="positionTitle"
-                name="positionTitle"
-                value={form.positionTitle}
-                onChange={handleChange}
-            />
+                <div className="field">
+                    <label htmlFor="positionTitle" className="form-label">Position Title</label>
+                    <input
+                        className={`form-control ${errors.positionTitle ? "is-invalid" : ""}`}
+                        id="positionTitle"
+                        name="positionTitle"
+                        value={form.positionTitle}
+                        onChange={handleChange}
+                    />
+                    {errors.positionTitle && (
+                        <div className="invalid-feedback">
+                            {errors.positionTitle}
+                        </div>
+                    )}
+                </div>
+            
+                <div className="field">
+                    <label htmlFor="location" className="form-label">Location</label>
+                    <input
+                        className={`form-control ${errors.location ? "is-invalid" : ""}`}
+                        id="location"
+                        name="location"
+                        value={form.location}
+                        onChange={handleChange}
+                    />
+                    {errors.location && (
+                        <div className="invalid-feedback">
+                            {errors.location}
+                        </div>
+                    )}
+                </div>
 
-            <label htmlFor="location" className="form-label">Location</label>
-            <input 
-                className="form-control" 
-                id="location"
-                name="location"
-                value={form.location}
-                onChange={handleChange}
-            />
+                <div className="field">
+                    <label htmlFor="status" className="form-label">Status</label>
+                    <select
+                        className="form-select"
+                        id="status"
+                        name="status"
+                        value={form.status}
+                        onChange={handleChange}
+                    >
+                        <option value="APPLIED">Applied</option>
+                        <option value="RECRUITER_SCREEN">Recruiter Screen</option>
+                        <option value="TECHNICAL_INTERVIEW">Technical Interview</option>
+                        <option value="FINAL_INTERVIEW">Final Interview</option>
+                        <option value="OFFER">Offer</option>
+                        <option value="ACCEPTED">Accepted</option>
+                        <option value="REJECTED">Rejected</option>
+                        <option value="WITHDRAWN">Withdrawn</option>
+                    </select>
+                </div>
 
-            <label htmlFor="salaryMin" className="form-label">Salary Min (Per Year)</label>
-            <input 
-                className="form-control" 
-                id="salaryMin"
-                name="salaryMin"
-                type="number"
-                value={form.salaryMin || 0}
-                onChange={handleChange}
-                onFocus={(e) => e.target.value = ''}
-            />
+                <div className="field">
+                    <label htmlFor="salaryMin" className="form-label">Salary Min (Per Year)</label>
+                    <input
+                        className={`form-control ${errors.salaryMin ? "is-invalid" : ""}`}
+                        id="salaryMin"
+                        name="salaryMin"
+                        type="number"
+                        value={form.salaryMin || 0}
+                        onChange={handleChange}
+                        onFocus={(e) => e.target.value = ''}
+                    />
+                    {errors.salaryMin && (
+                        <div className="invalid-feedback">
+                            {errors.salaryMin}
+                        </div>
+                    )}
+                </div>
 
-            <label htmlFor="salaryMax" className="form-label">Salary Max (Per Year)</label>
-            <input 
-                className="form-control" 
-                id="salaryMax"
-                name="salaryMax"
-                type="number"
-                value={form.salaryMax || 0}
-                onChange={handleChange}
-                onFocus={(e) => e.target.value = ''}
-            />
+                <div className="field">
+                    <label htmlFor="salaryMax" className="form-label">Salary Max (Per Year)</label>
+                    <input
+                        className={`form-control ${errors.salaryMax ? "is-invalid" : ""}`}
+                        id="salaryMax"
+                        name="salaryMax"
+                        type="number"
+                        value={form.salaryMax || 0}
+                        onChange={handleChange}
+                        onFocus={(e) => e.target.value = ''}
+                    />
+                    {errors.salaryMax && (
+                        <div className="invalid-feedback">
+                            {errors.salaryMax}
+                        </div>
+                    )}
+                </div>
 
-            <label htmlFor="notes" className="form-label">Notes</label>
-            <input 
-                className="form-control" 
-                id="notes" 
-                name="notes"
-                value={form.notes ?? ""} // React doesn't like null as an input value, translate to empty string
-                onChange={handleChange}
-            />
+                <div className="notes-field">
+                    <label htmlFor="notes" className="form-label">Notes</label>
+                    <textarea
+                        className="form-control"
+                        id="notes"
+                        name="notes"
+                        value={form.notes ?? ""} // React doesn't like null as an input value, translate to empty string
+                        onChange={handleChange}>
+                    </textarea>                    
+                </div>
 
-            <label htmlFor="status" className="form-label">Status</label>
-            <select 
-                className="form-select"
-                id="status"
-                name="status"
-                value={form.status}
-                onChange={handleChange}
-            > 
-                <option value="APPLIED">Applied</option>
-                <option value="RECRUITER_SCREEN">Recruiter Screen</option>
-                <option value="TECHNICAL_INTERVIEW">Technical Interview</option>
-                <option value="FINAL_INTERVIEW">Final Interview</option>
-                <option value="OFFER">Offer</option>
-                <option value="ACCEPTED">Accepted</option>
-                <option value="REJECTED">Rejected</option>
-                <option value="WITHDRAWN">Withdrawn</option>
-            </select>
-            <button type="submit" className="btn btn-primary">Submit</button>
-        </form>
+                <div className="submit-row">
+                    <button type="submit" className="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
     );
 }
