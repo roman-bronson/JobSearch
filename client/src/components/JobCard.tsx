@@ -1,8 +1,5 @@
 import { useState } from 'react';
 import type { Job } from '../types/Job';
-import { FaTrash, FaEdit } from "react-icons/fa";
-import { TbMoneybag } from "react-icons/tb";
-import { IoLocationOutline } from "react-icons/io5";
 import type { updateJobRequest } from '../api/jobs';
 import { statusMapping } from '../types/statusMap';
 
@@ -50,39 +47,51 @@ export default function JobCard({ job, handleDelete, handleUpdate }: JobCardProp
 
     if (isEditing === true) {
         return (
-        <div className='card' style={{ width: '18rem', marginBottom: '1rem' }}>
-            <div className='card-header'>
-                <input 
-                    id="companyName" 
-                    name="companyName"
-                    value={editableJobCard.companyName} 
-                    onChange={handleChange}/>
-            </div>
-            <ul className="list-group list-group-flush">
-                <li className="list-group-item">
+        <div className='job-card'>
+            <div className='job-card-header'>
+                <div className="job-card-header-details">
                     <input 
+                        id="companyName" 
+                        name="companyName"
+                        value={editableJobCard.companyName} 
+                        onChange={handleChange}/>
+                    <div className="job-card-header-buttons">
+                        <button type="button" className="btn btn-danger" onClick={handleDelete}>
+                            <i className="bi bi-trash2-fill"></i>
+                        </button>
+                        <button type="button" className="btn btn-primary" onClick={() => handleSave(id, editableJobCard)}>
+                            Save
+                        </button>
+                        <button type='button' className='btn btn-secondary' onClick={() => setIsEditing((current) => !current)}>
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+                <input 
                         id="positionTitle" 
                         name="positionTitle"
                         value={editableJobCard.positionTitle} 
                         onChange={handleChange}/>
-                </li>
-                <li className="list-group-item">
-                    <input 
-                        id="location" 
+        </div>
+        <div className="card-body">
+            <div className="card-details">
+                <div className="details-items">
+                    <i className="bi bi-geo-fill"> </i>
+                    <input
+                        id="location"
                         name="location"
-                        value={editableJobCard.location} 
+                        value={editableJobCard.location}
                         onChange={handleChange}/>
-                </li>
-                <li className="list-group-item">
+                </div>
+                <div className="details-items">
+                    <i className="bi bi-cash-stack"> </i> 
                     <label htmlFor="salaryMin" className="form-label">Salary Min (Per Year)</label>
-                    <input 
-                        id="salaryMin" 
+                    <input
+                        id="salaryMin"
                         name="salaryMin"
                         type="number"
-                        value={editableJobCard.salaryMin ?? 0} 
+                        value={editableJobCard.salaryMin ?? 0}
                         onChange={handleChange}/>
-                </li>
-                <li className="list-group-item">
                     <label htmlFor="salaryMax" className="form-label">Salary Max (Per Year)</label>
                     <input 
                         id="salaryMax" 
@@ -90,18 +99,9 @@ export default function JobCard({ job, handleDelete, handleUpdate }: JobCardProp
                         type='number'
                         value={editableJobCard.salaryMax ?? 0} 
                         onChange={handleChange}/>
-                </li>
-                <li className="list-group-item">
-                    <textarea 
-                        className="form-control" 
-                        id="notes"
-                        name='notes'
-                        rows={3}
-                        value={editableJobCard.notes ?? ''}
-                        onChange={handleChange}>
-                        </textarea>
-                </li>
-                <li className="list-group-item">
+                </div>
+            </div>
+                <div className='card-status'>
                     <select 
                         className="form-select"
                         id="status"
@@ -118,40 +118,45 @@ export default function JobCard({ job, handleDelete, handleUpdate }: JobCardProp
                         <option value="REJECTED">Rejected</option>
                         <option value="WITHDRAWN">Withdrawn</option>
                     </select>
-                </li>
-                <li className="list-group-item">
-                    <button type="button" className="btn btn-primary" onClick={() => handleSave(id, editableJobCard)}>
-                        Save
-                    </button>
-                    <button type='button' className='btn btn-secondary' onClick={() => setIsEditing((current) => !current)}>
-                        Cancel
-                    </button>
-                </li>
-
-            </ul>
+                </div>
+                <div className='card-notes'>
+                    <textarea 
+                        className="form-control" 
+                        id="notes"
+                        name='notes'
+                        rows={3}
+                        value={editableJobCard.notes ?? ''}
+                        onChange={handleChange}>
+                        </textarea>
+                </div>
+            </div>
         </div>
         );
     }
     else {
         return (
-            <div className="card" style={{ width: '18rem', marginBottom: '1rem' }}>
-                <div className="card-header company-name">{companyName}</div>
-                <ul className="list-group list-group-flush">
-                    <li className="list-group-item position-title">{positionTitle}</li>
-                    <li className="list-group-item card-details"><IoLocationOutline className='details-icon'/>{location}</li>
-                    <li className="list-group-item card-details"><TbMoneybag className='details-icon'/>{formatSalary(salaryMin, salaryMax)}</li>
-                    { notes && <li className="list-group-item card-notes">{notes}</li> }
-                    <li className="list-group-item card-notes">{statusMapping[status].displayName}</li>
-                    <li className="list-group-item">
-                        <button type="button" className="btn btn-danger" onClick={handleDelete}>
-                            <FaTrash/>
+            <div className="job-card">
+                <div className='job-card-header'>
+                    <div className="job-card-header-details">
+                        <p className='company-name'>{companyName || "Untitled Job"}</p>
+                        <button type='button' className='btn btn-secondary btn-sm' onClick={() => setIsEditing((current) => !current)}>
+                            <i className="bi bi-pencil-square"></i>
                         </button>
-                        <button type='button' className='btn btn-secondary' onClick={() => setIsEditing((current) => !current)}>
-                            <FaEdit/>
-                        </button>
-                    </li>
-
-                </ul>
+                    </div>
+                    <p className='position-title'>{positionTitle || "Position not Specified"}</p>
+                </div>
+                <div className="card-body">
+                    <div className="card-details">
+                        <div className='details-items'>
+                            <i className="bi bi-geo-fill"></i> {location || "Location not Specified"}
+                        </div>
+                        <div className='details-items'>
+                            <i className="bi bi-cash-stack"></i> {formatSalary(salaryMin, salaryMax)}
+                        </div>
+                    </div>
+                    <div className="card-status" style={{backgroundColor: statusMapping[status].color}}>{statusMapping[status].displayName}</div>
+                    { notes && <div className="card-notes">{notes}</div> }
+                </div>
             </div>
         );
     }
