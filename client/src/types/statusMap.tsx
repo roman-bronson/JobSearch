@@ -6,34 +6,34 @@ interface StatusConfig {
 export const statusMapping: Record<string, StatusConfig> = { 
     "APPLIED": {
         displayName: "Applied",
-        color: "Green"
+        color: "#98c8ff"
     },
     "RECRUITER_SCREEN": {
         displayName: "Recruiter Screen",
-        color: "Gray"
+        color: "#cae3ff"
     },
     "TECHNICAL_INTERVIEW": {
         displayName: "Technical Interview",
-        color: "Gray"
+        color: "#ff8f4f"
     },
     "FINAL_INTERVIEW": {
         displayName: "Final Interview",
-        color: "Gray"
+        color: "#b260ff"
     },
     "OFFER": {
         displayName: "Offer",
-        color: "Gray"
+        color: "#a7ffbd"
     },
     "ACCEPTED": {
         displayName: "Accepted",
-        color: "Green"
+        color: "#32cf47"
     },
     "REJECTED": {
         displayName: "Rejected",
-        color: "Red"
+        color: "#F15050"
     },
     "WITHDRAWN": {
         displayName: "Withdrawn",
-        color: "Gray"
+        color: "#bdbdbd"
     }
 };
