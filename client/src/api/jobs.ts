@@ -10,7 +10,7 @@ export interface CreateJobRequest {
     notes?: string | null;
 }
 
-export interface updateJobRequest {
+export interface UpdateJobRequest {
     companyName?: string;
     positionTitle?: string;
     location?: string;
@@ -60,7 +60,7 @@ export const createJob = async (job: CreateJobRequest): Promise<Job> => {
     return response.json();
 }
 
-export const editJob = async (id: number, payload: updateJobRequest): Promise<Job> => {
+export const editJob = async (id: number, payload: UpdateJobRequest): Promise<Job> => {
     const response = await fetch(`${API_URL}/${id}`, {
         method: "PATCH",
         body: JSON.stringify(payload),
