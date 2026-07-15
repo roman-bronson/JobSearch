@@ -2,8 +2,8 @@ import './App.css'
 import JobList from './components/JobList.tsx';
 import type { Job } from './types/Job.tsx'
 import { useState, useEffect } from 'react'
-import { getAllJobs, deleteJob, createJob, editJob, type CreateJobRequest, type updateJobRequest } from './api/jobs.ts';
-import Header from './components/header.tsx';
+import { getAllJobs, deleteJob, createJob, editJob, type CreateJobRequest, type UpdateJobRequest } from './api/jobs.ts';
+import Header from './components/Header.tsx';
 
 function App() {
     const [jobs, setJobs] = useState<Job[]>([]);
@@ -22,7 +22,7 @@ function App() {
         fetchJobs();
     }, []);
 
-    const addJob = async (job: CreateJobRequest) => {
+    const handleAddJob = async (job: CreateJobRequest) => {
         try {
             const newJob = await createJob(job);
             setJobs((prevJobs) => [...prevJobs, newJob]);
@@ -41,7 +41,7 @@ function App() {
         }
     };
 
-    const handleUpdate = async (id: number, payload: updateJobRequest) => {
+    const handleUpdate = async (id: number, payload: UpdateJobRequest) => {
         try {
             const updatedJob = await editJob(id, payload);
             setJobs((jobs) => jobs.map((job) => job.id === updatedJob.id ? updatedJob : job));
@@ -56,8 +56,8 @@ function App() {
 
     return (
         <div>
-            <Header renderAddJobForm={renderAddJobForm} addJob={addJob} toggleRenderJobCardForm={toggleRenderAddJobForm}/>
-            <JobList jobs={jobs} handleDelete={handleDelete} handleUpdate={handleUpdate}/>
+            <Header renderAddJobForm={renderAddJobForm} onAddJob={handleAddJob} toggleRenderJobCardForm={toggleRenderAddJobForm}/>
+            <JobList jobs={jobs} onDelete={handleDelete} onUpdate={handleUpdate}/>
         </div>
     );
 }
