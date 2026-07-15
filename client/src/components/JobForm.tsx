@@ -1,13 +1,15 @@
-import type { Job } from '../types/Job'
-import { useState } from 'react'
-import type { CreateJobRequest } from '../api/jobs';
+import { useState } from "react";
+import type { Job } from "../types/Job";
 
-interface AddJobCardProps {
-    addJob: (job: CreateJobRequest) => void;
-    toggleRenderJobCardForm: () => void;
+interface JobFormProps {
+    mode: "create" | "edit";
+    initialValues?: JobFormData;
+    onSubmit: (data: JobFormData) => void | Promise<void>;
+    onCancel?: () => void;
+    onDelete?: () => void;
 }
 
-interface FormData {
+interface JobFormData {
     companyName: string;
     positionTitle: string;
     location: string;
@@ -15,6 +17,16 @@ interface FormData {
     salaryMax?: number | null;
     status: string;
     notes?: string | null;
+}
+
+const emptyFormData: JobFormData = {
+    companyName: '',
+    positionTitle: '',
+    location: '',
+    salaryMin: 0,
+    salaryMax: 0,
+    status: 'APPLIED',
+    notes: ''
 }
 
 interface FormErrors {
@@ -25,18 +37,8 @@ interface FormErrors {
     salaryMax?: string;
 }
 
-const initialFormData: FormData = {
-    companyName: '',
-    positionTitle: '',
-    location: '',
-    salaryMin: 0,
-    salaryMax: 0,
-    status: 'APPLIED',
-    notes: ''
-}
-
-export default function AddJobForm({ addJob, toggleRenderJobCardForm }: AddJobCardProps) {
-    const [ form, setForm ] = useState<FormData>(initialFormData);
+export default function JobForm ( {mode, initialValues, onCancel, onDelete, onSubmit}: JobFormProps) {
+    const [form, setForm] = useState<JobFormData>(initialValues ?? emptyFormData)
     const [errors, setErrors] = useState<FormErrors>({});
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -98,21 +100,25 @@ export default function AddJobForm({ addJob, toggleRenderJobCardForm }: AddJobCa
             notes: form.notes
         }
 
-        addJob(newJob as Job)
-        setForm(initialFormData)
+        onSubmit(newJob as Job)
+        setForm(emptyFormData)
     }
 
-    return (
-        <div className="add-job-form">
-            <div className='job-form-header'>
-                <div className="job-form-header-details">
-                    <h4>New Job Application</h4>
-                    <button type="button" className="btn btn-danger" onClick={toggleRenderJobCardForm}><i className="bi bi-x-lg"></i></button>
-                </div>
-                <p>Track a new job application during your job search!</p>
-            </div>
-            <form className="job-form-grid" onSubmit={handleSubmit}>
-                <div className='field'>
+    return(
+        <div className="job-form" onSubmit={handleSubmit}>
+            { mode === "edit" &&                     
+                <div className="job-card-header-buttons">
+                        <button type="button" className="btn btn-danger" onClick={onDelete}>
+                            <i className="bi bi-trash2-fill"></i>
+                        </button>
+                        <button type="button" className="btn btn-primary" onClick={handleSubmit}>
+                            Save
+                        </button>
+                        <button type='button' className='btn btn-secondary' onClick={onCancel}>
+                            Cancel
+                        </button>
+                    </div> }
+            <div className='field'>
                     <label htmlFor="companyName" className="form-label">Company Name</label>
                     <input 
                         className={`form-control ${errors.companyName ? "is-invalid" : ""}`}
@@ -227,10 +233,11 @@ export default function AddJobForm({ addJob, toggleRenderJobCardForm }: AddJobCa
                     </textarea>                    
                 </div>
 
-                <div className="submit-row">
-                    <button type="submit" className="btn btn-primary">Submit</button>
-                </div>
-            </form>
+                { mode === "create" && 
+                        <div className="submit-row">
+                            <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Submit</button>
+                        </div> }
         </div>
+        
     );
 }

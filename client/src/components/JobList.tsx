@@ -1,18 +1,18 @@
 import JobCard from "./JobCard";
 import type { Job } from "../types/Job";
-import type { updateJobRequest } from "../api/jobs";
+import type { UpdateJobRequest } from "../api/jobs";
 
 interface JobListProps {
     jobs: Job[];
-    handleDelete: (id: number) => void;
-    handleUpdate: (id: number, payload: updateJobRequest) => Promise<void>;
+    onDelete: (id: number) => Promise<void>;
+    onUpdate: (id: number, payload: UpdateJobRequest) => Promise<void>;
 }
 
-export default function JobList ({ jobs, handleDelete, handleUpdate }: JobListProps) {
+export default function JobList ({ jobs, onDelete, onUpdate }: JobListProps) {
     return (
         <div className="job-list">
             {jobs.map((job) => (
-                <JobCard key={job.id} job={job} handleDelete={() => handleDelete(job.id)} handleUpdate={handleUpdate}/>
+                <JobCard key={job.id} job={job} onDelete={onDelete} onUpdate={onUpdate}/>
             ))}
         </div>
     );

@@ -1,13 +1,13 @@
 import type { CreateJobRequest } from "../api/jobs";
-import AddJobCard from "./AddJobForm.tsx";
+import JobForm from "./JobForm.tsx";
 
 interface HeaderProps {
     toggleRenderJobCardForm: () => void;
-    addJob: (job: CreateJobRequest) => void;
+    onAddJob: (job: CreateJobRequest) => void;
     renderAddJobForm: boolean;
 }
 
-export default function Header ( { toggleRenderJobCardForm, addJob, renderAddJobForm }: HeaderProps) {
+export default function Header ( { toggleRenderJobCardForm, onAddJob, renderAddJobForm }: HeaderProps) {
     console.log(toggleRenderJobCardForm);
     return (
         <>
@@ -16,7 +16,7 @@ export default function Header ( { toggleRenderJobCardForm, addJob, renderAddJob
 
                 <button type="button" className="btn btn-success" onClick={toggleRenderJobCardForm}>Add a Job</button>
             </div>
-            { renderAddJobForm && (<AddJobCard addJob={addJob} toggleRenderJobCardForm={toggleRenderJobCardForm}/>)}
+            { renderAddJobForm && (<JobForm mode="create" onSubmit={onAddJob}/>)}
         </>
     );
 }
